@@ -87,7 +87,7 @@ class WanderBehavior : public MoveBehavior
 
     float heading(const Vector2f& v)
     {
-      return std::atan2(v.x, v.y);
+      return std::atan2(v.y, v.x);
     }
 };
 

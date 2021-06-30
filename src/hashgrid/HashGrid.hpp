@@ -41,7 +41,7 @@ template <typename T> class HashGrid
 	  indexes.emplace_back(index(ix, iy, mInvCellSize));
 	}
       }
-      //int64_t idx = index(x, y, mInvCellSize);
+
       std::vector<T*> res;
       for(auto& idx : indexes)
       {

@@ -40,13 +40,6 @@ class FlockBehavior : public MoveBehavior
 
     Vector2f compute(const Boid& b)
     {
-/*
-      Vector2f force = separation(b);
-      force += align(b);
-      force += cohesion(b);
-      return force;
-*/
-      // Alignement
       Vector2f align;
       Vector2f separation;
       Vector2f cohesion;
@@ -107,88 +100,6 @@ class FlockBehavior : public MoveBehavior
     float mDistance;
     SeekBehavior seekBehavior;
 
-    Vector2f align(const Boid& b)
-    {
-      Vector2f force;
-      const float total = static_cast<float>(b.getNeighbours().size());
-      for(Boid* bPtr : b.getNeighbours())
-      {
-	const float dist = b.getPosition().distance(bPtr->getPosition());
-	if(dist > 0 && dist < mDistance)
-	{
-	  force += bPtr->getVelocity();
-	}
-      }
-
-      if(total > 0.f)
-      {
-	force /= total;
-	force = force.normalize() * b.getMaxSpeed();
-	force -= b.getVelocity();
-	limit(force, b.getMaxForce());
-      }
-
-      return force;
-    }
-
-    Vector2f separation(const Boid& b)
-    {
-      Vector2f force;
-      const float total = static_cast<float>(b.getNeighbours().size());
-      for(Boid* bPtr : b.getNeighbours())
-      {
-	const float dist = b.getPosition().distance(bPtr->getPosition());
-	if(dist > 0 && dist < mSeparation)
-	{
-	  Vector2f diff = b.getPosition() - bPtr->getPosition();
-	  diff = diff.normalize() / dist;
-	  force += diff;
-	}
-      }
-
-      if(total > 0.f)
-      {
-	force /= total;
-      }
-
-      if(force.length() > 0.f)
-      {
-	force = force.normalize() * b.getMaxSpeed();
-	force -= b.getVelocity();
-	limit(force, b.getMaxForce());
-      }
-
-      return force;
-    }
-
-    Vector2f cohesion(const Boid& b)
-    {
-      Vector2f force;
-      const float total = static_cast<float>(b.getNeighbours().size());
-      for(Boid* bPtr : b.getNeighbours())
-      {
-	const float dist = b.getPosition().distance(bPtr->getPosition());
-	if(dist > 0 && dist < mDistance)
-	{
-	  force += bPtr->getPosition();
-	}
-      }
-
-      if(total > 0.f)
-      {
-	force /= total;
-	seekBehavior.setTarget(force);
-	force = seekBehavior.compute(b);
-/*
-	Vector2f desired = force - b.getPosition();
-	desired = desired.normalize() * b.getMaxSpeed();
-	force = desired - b.getVelocity();
-	limit(force, b.getMaxForce());
-*/
-      }
-
-      return force;
-    }
 };
 
 #endif /* BOIDS_BEHAVIORS_FLOCKBEHAVIOR_HPP_ */

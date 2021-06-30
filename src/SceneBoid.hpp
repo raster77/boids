@@ -33,51 +33,55 @@ class SceneBoid final : public Scene
   private:
     struct TimeMeasure
     {
-        std::string info;
+      std::string info;
 
-        TimeMeasure()
-    	: info(""), duration(0.f), oldDuration(0.f)
-        {
-        }
+      TimeMeasure()
+	: info("")
+	, duration(0.f)
+	, oldDuration(0.f)
+      {
+      }
 
-        TimeMeasure(const std::string& s)
-    	: info(s), duration(0.f), oldDuration(0.f)
-        {
-        }
+      TimeMeasure(const std::string& s)
+	: info(s)
+	, duration(0.f)
+	, oldDuration(0.f)
+      {
+      }
 
-        void start()
-        {
-          t1 = std::chrono::high_resolution_clock::now();
-        }
+      void start()
+      {
+	t1 = std::chrono::high_resolution_clock::now();
+      }
 
-        void stop()
-        {
-          oldDuration = duration;
-          std::chrono::duration<float, std::milli> d =
-    	  std::chrono::high_resolution_clock::now() - t1;
-          duration = d.count();
-        }
+      void stop()
+      {
+	oldDuration = duration;
+	std::chrono::duration<float, std::milli> d =
+	std::chrono::high_resolution_clock::now() - t1;
+	duration = d.count();
+      }
 
-        float getDuration()
-        {
-          return duration;
-        }
+      float getDuration()
+      {
+	return duration;
+      }
 
-        bool hasChanged()
-        {
-          return oldDuration != duration;
-        }
+      bool hasChanged()
+      {
+	return oldDuration != duration;
+      }
 
-        std::string getInfo()
-        {
-	  std::string durationStr = std::to_string(getDuration());
-          return std::string(info + ": " + durationStr.substr(0, durationStr.find(".") + 5) + "ms");
-        }
+      std::string getInfo()
+      {
+	std::string durationStr = std::to_string(getDuration());
+	return std::string(info + ": " + durationStr.substr(0, durationStr.find(".") + 5) + "ms");
+      }
 
-      private:
-        std::chrono::time_point<std::chrono::high_resolution_clock> t1;
-        float duration;
-        float oldDuration;
+    private:
+      std::chrono::time_point<std::chrono::high_resolution_clock> t1;
+      float duration;
+      float oldDuration;
     };
 
     Fps fps;

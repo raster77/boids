@@ -127,10 +127,6 @@ class Application
 	    }
 
 	    window()->create(videoMode, title, style, ctx);
-/*
-	    window()->setPosition(sf::Vector2i(sf::VideoMode::getDesktopMode().width / 2 - window()->getSize().x / 2,
-					       sf::VideoMode::getDesktopMode().height / 2 - window()->getSize().y / 2));
-*/
 	}
 };
 

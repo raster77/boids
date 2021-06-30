@@ -46,7 +46,7 @@ class SeekBehavior : public MoveBehavior
 
     Vector2f compute(const Boid& b)
     {
-      Vector2f force = (mTarget - b.getPosition()); //;.normalize() * mMaxSpeed;
+      Vector2f force = (mTarget - b.getPosition());
       float d = force.length();
       force = d < mDistance ?
 	      force.normalize() * map(d, 0.f, mDistance, 0.f, b.getMaxSpeed()) :

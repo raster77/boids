@@ -1,10 +1,3 @@
-/*
- * MoveBehavior.hpp
- *
- *  Created on: 29 mai 2021
- *      Author: thierry
- */
-
 #ifndef BOIDS_BEHAVIORS_MOVEBEHAVIOR_HPP_
 #define BOIDS_BEHAVIORS_MOVEBEHAVIOR_HPP_
 

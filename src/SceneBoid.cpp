@@ -42,33 +42,29 @@ void SceneBoid::load()
     Boid b;
     b.setPosition(rnd->getUniformFloat(100.f, 1500.f), rnd->getUniformFloat(100.f, 800.f));
     b.setColor(sf::Color(255, 0, 120));
-    b.setMaxForce(20.f);
-    b.setMaxSpeed(300.f);
-//      b.addBehavior(&wanderBehavior);
+    b.setMaxForce(10.f);
+    b.setMaxSpeed(250.f);
+    b.addBehavior(&wanderBehavior);
     b.addBehavior(&flockBehavior);
 //      b.addBehavior(&boundaryBehavior);
     b.apply(Vector2f(rnd->getUniformFloat(-300.f, 300.f), rnd->getUniformFloat(-300.f, 300.f)));
     boids.emplace_back(b);
   }
   const float size = static_cast<float>(grid.getCellSize());
+  const sf::Color gridColor(100, 100, 100, 255);
   for(unsigned int x = 0; x <= window->getSize().x; x+= grid.getCellSize())
   {
     for(unsigned int y = 0; y <= window->getSize().y; y+= grid.getCellSize())
     {
-	gridVertices.emplace_back(sf::Vector2f(x, y));
-	gridVertices.emplace_back(sf::Vector2f(x + size, y));
-	gridVertices.emplace_back(sf::Vector2f(x + size, y));
-	gridVertices.emplace_back(sf::Vector2f(x + size, y + size));
-	gridVertices.emplace_back(sf::Vector2f(x + size, y + size));
-	gridVertices.emplace_back(sf::Vector2f(x, y + size));
-	gridVertices.emplace_back(sf::Vector2f(x, y + size));
-	gridVertices.emplace_back(sf::Vector2f(x, y));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x, y), gridColor));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x + size, y), gridColor));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x + size, y), gridColor));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x + size, y + size), gridColor));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x + size, y + size), gridColor));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x, y + size), gridColor));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x, y + size), gridColor));
+      gridVertices.emplace_back(sf::Vertex(sf::Vector2f(x, y), gridColor));
     }
-  }
-
-  for(auto& v : gridVertices)
-  {
-    v.color = sf::Color(100, 100, 100, 255);
   }
 
   times.emplace_back(TimeMeasure("Grid update"));
@@ -76,6 +72,8 @@ void SceneBoid::load()
 
   infoPanel.loadFont("res/Roboto-Regular.ttf");
   infoPanel.setTextSize(13);
+
+  mRunning = true;
 }
 
 void SceneBoid::preUpdate(const float dt)
@@ -86,51 +84,59 @@ void SceneBoid::preUpdate(const float dt)
 void SceneBoid::update(const float dt)
 {
   fps.update();
-
-  times[0].start();
-  grid.clear();
-  for(auto& b : boids) {
-    grid.add(b.getPosition().x, b.getPosition().y, &b);
-  }
-  times[0].stop();
-
-  times[1].start();
-  vertices.clear();
-  vertices.reserve(boids.size() * 3);
-  for(auto& b : boids) {
-    std::vector<Boid*> res = grid.get(b.getPosition().x, b.getPosition().y);
-
-    b.findNeighbours(res, flockBehavior.getDistance());
-    b.update(dt);
-    checkBounds(b);
-
-    b.updateVertices();
-
-    vertices.insert(vertices.end(), b.getVertices().begin(), b.getVertices().end());
-  }
-  times[1].stop();
-  if(showInfo && clock.getElapsedTime().asSeconds() > 0.25f)
+  if(mRunning)
   {
-    std::string str("Fps: ");
-    str.append(std::to_string(static_cast<unsigned int>(fps.getFPS()))).append("\n");
-    str.append("Boids: ").append(std::to_string(boids.size())).append("\n");
-    for(auto& t: times)
-    {
-      str.append(t.getInfo()).append("\n");
+    times[0].start();
+    grid.clear();
+    for(auto& b : boids) {
+      grid.add(b.getPosition().x, b.getPosition().y, &b);
     }
+    times[0].stop();
 
-    infoPanel.setText(str);
-    clock.restart();
+    times[1].start();
+    vertices.clear();
+    vertices.reserve(boids.size() * 3);
+    for(auto& b : boids) {
+      std::vector<Boid*> res = grid.get(b.getPosition().x, b.getPosition().y);
+
+      b.findNeighbours(res, flockBehavior.getDistance());
+      b.update(dt);
+      checkBounds(b);
+
+      b.updateVertices();
+
+      vertices.insert(vertices.end(), b.getVertices().begin(), b.getVertices().end());
+    }
+    times[1].stop();
+    if(showInfo && clock.getElapsedTime().asSeconds() > 0.25f)
+    {
+      std::string str("Fps: ");
+      str.append(std::to_string(static_cast<unsigned int>(fps.getFPS()))).append("\n");
+      str.append("Boids: ").append(std::to_string(boids.size())).append("\n");
+      for(auto& t: times)
+      {
+	str.append(t.getInfo()).append("\n");
+      }
+
+      infoPanel.setText(str);
+      clock.restart();
+    }
   }
 }
 
 void SceneBoid::draw()
 {
   if(showGrid)
+  {
     window->draw(gridVertices.data(), gridVertices.size(), sf::Lines);
+  }
+
   window->draw(vertices.data(), vertices.size(), sf::Triangles);
+
   if(showInfo)
+  {
     infoPanel.render(window);
+  }
 }
 
 void SceneBoid::handleEvent(sf::Event& event)
@@ -150,6 +156,10 @@ void SceneBoid::handleEvent(sf::Event& event)
 
       if(event.key.code == sf::Keyboard::I) {
 	showInfo = !showInfo;
+      }
+
+      if(event.key.code == sf::Keyboard::P) {
+	mRunning = !mRunning;
       }
   }
 }
