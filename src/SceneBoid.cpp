@@ -5,6 +5,7 @@ SceneBoid::SceneBoid()
   , grid(50)
   , showGrid(true)
   , showInfo(true)
+  , showTrail(true)
 {
 }
 
@@ -13,6 +14,7 @@ SceneBoid::SceneBoid(sf::RenderWindow* window)
   , grid(50)
   , showGrid(true)
   , showInfo(true)
+  , showTrail(true)
 {
 }
 
@@ -32,16 +34,18 @@ void SceneBoid::load()
   boundaryBehavior.setMin(Vector2f(0.f, 0.f));
   boundaryBehavior.setMax(Vector2f(1600.f, 900.f));
 
-  flockBehavior.setSeparation(20.f);
-  flockBehavior.setDistance(80.f);
+  flockBehavior.setSeparation(25.f);
+  flockBehavior.setDistance(50.f);
 
   rnd::Random* rnd = rnd::Random::getInstance();
+  const std::size_t N = 1000;
+  sprites.reserve(N);
+  boids.reserve(N);
 
-  for(std::size_t i = 0; i < 1000; ++i)
+  for(std::size_t i = 0; i < N; ++i)
   {
     Boid b;
     b.setPosition(rnd->getUniformFloat(100.f, 1500.f), rnd->getUniformFloat(100.f, 800.f));
-    b.setColor(sf::Color(255, 0, 120));
     b.setMaxForce(10.f);
     b.setMaxSpeed(250.f);
     b.addBehavior(&wanderBehavior);
@@ -49,6 +53,9 @@ void SceneBoid::load()
 //      b.addBehavior(&boundaryBehavior);
     b.apply(Vector2f(rnd->getUniformFloat(-300.f, 300.f), rnd->getUniformFloat(-300.f, 300.f)));
     boids.emplace_back(b);
+    sprites.emplace_back(BoidSprite());
+    sprites.back().setColor(sf::Color(255, 0, 120));
+    sprites.back().update(b);
   }
   const float size = static_cast<float>(grid.getCellSize());
   const sf::Color gridColor(100, 100, 100, 255);
@@ -88,30 +95,42 @@ void SceneBoid::update(const float dt)
   {
     times[0].start();
     grid.clear();
-    for(auto& b : boids) {
-      grid.add(b.getPosition().x, b.getPosition().y, &b);
+    std::size_t idx = 0;
+    for(auto& b : sprites) {
+      //grid.add(b.getBoundingBox().left, b.getBoundingBox().top, b.getBoundingBox().width, b.getBoundingBox().height, &b);
+      b.showTrail(showTrail);
+      grid.add(b.getBoundingBox().left, b.getBoundingBox().top, &boids[idx]);
+      idx++;
     }
     times[0].stop();
 
     times[1].start();
     vertices.clear();
     vertices.reserve(boids.size() * 3);
+    trailVertices.clear();
+    trailVertices.reserve(boids.size() * 200);
+
+    idx = 0;
     for(auto& b : boids) {
-      std::vector<Boid*> res = grid.get(b.getPosition().x, b.getPosition().y);
+      //std::vector<Boid*> res = grid.get(b.getBoundingBox().left, b.getBoundingBox().top, b.getBoundingBox().width, b.getBoundingBox().height);
+      std::vector<Boid*> res = grid.get(sprites[idx].getBoundingBox().left, sprites[idx].getBoundingBox().top);
 
       b.findNeighbours(res, flockBehavior.getDistance());
       b.update(dt);
       checkBounds(b);
 
-      b.updateVertices();
+      sprites[idx].update(b);
 
-      vertices.insert(vertices.end(), b.getVertices().begin(), b.getVertices().end());
+      vertices.insert(vertices.end(), sprites[idx].getVertices().begin(), sprites[idx].getVertices().end());
+      if(showTrail)
+	trailVertices.insert(trailVertices.end(), sprites[idx].getTrailVertices().begin(), sprites[idx].getTrailVertices().end());
+      idx++;
     }
     times[1].stop();
-    if(showInfo && clock.getElapsedTime().asSeconds() > 0.25f)
+    if(showInfo && clock.getElapsedTime().asSeconds() > 0.5f)
     {
       std::string str("Fps: ");
-      str.append(std::to_string(static_cast<unsigned int>(fps.getFPS()))).append("\n");
+      str.append(std::to_string(fps.getFPS())).append("\n");
       str.append("Boids: ").append(std::to_string(boids.size())).append("\n");
       for(auto& t: times)
       {
@@ -132,6 +151,8 @@ void SceneBoid::draw()
   }
 
   window->draw(vertices.data(), vertices.size(), sf::Triangles);
+  if(showTrail)
+    window->draw(trailVertices.data(), trailVertices.size(), sf::Quads);
 
   if(showInfo)
   {
@@ -161,25 +182,16 @@ void SceneBoid::handleEvent(sf::Event& event)
       if(event.key.code == sf::Keyboard::P) {
 	mRunning = !mRunning;
       }
+
+      if(event.key.code == sf::Keyboard::T) {
+	showTrail = !showTrail;
+      }
   }
 }
 
 void SceneBoid::checkBounds(Boid& b)
 {
-  float x = b.getPosition().x;
-  float y = b.getPosition().y;
-  if(x < 0.f)
-  {
-    x = window->getSize().x;
-  } else if(x > window->getSize().x) {
-    x = 0.f;
-  }
-
-  if(y < 0.f)
-  {
-    y = window->getSize().y;
-  } else if(y > window->getSize().y) {
-    y = 0.f;
-  }
+  const float x = b.getPosition().x < 0.f ? window->getSize().x : b.getPosition().x > window->getSize().x ? 0.f : b.getPosition().x;
+  const float y = b.getPosition().y < 0.f ? window->getSize().y : b.getPosition().y > window->getSize().y ? 0.f : b.getPosition().y;
   b.setPosition(x, y);
 }

@@ -28,14 +28,14 @@ class Fps
       ++frame;
     }
 
-    const std::size_t getFPS() const
+    const unsigned int getFPS() const
     {
       return mFps;
     }
 
   private:
-    std::size_t frame;
-    std::size_t mFps;
+    unsigned int frame;
+    unsigned int mFps;
     sf::Clock clock;
 };
 

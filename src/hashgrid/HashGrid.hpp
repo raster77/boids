@@ -4,6 +4,7 @@
 #include "robin_hood.h"
 #include <array>
 #include <cmath>
+#include <unordered_set>
 #include <vector>
 
 template <typename T> class HashGrid
@@ -25,26 +26,56 @@ template <typename T> class HashGrid
 
     void add(const float x, const float y, T* data)
     {
-      mHashMap[index(x, y, mInvCellSize)].emplace_back(data);
+      const int64_t idx = index(x, y, mInvCellSize);
+      mHashMap[idx].emplace_back(data);
+    }
+
+    void add(const float x, const float y, const float w, const float h, T* data)
+    {
+      indexes.clear();
+      indexes.emplace(index(x, y, mInvCellSize));
+      indexes.emplace(index(x + w, y, mInvCellSize));
+      indexes.emplace(index(x + w, y + h, mInvCellSize));
+      indexes.emplace(index(x, y + h, mInvCellSize));
+      for(auto& idx: indexes) {
+	mHashMap[idx].emplace_back(data);
+      }
     }
 
     std::vector<T*> get(const float x, const float y)
     {
       const int64_t SZ = static_cast<int64_t>(mCellSize);
-      std::vector<int64_t> indexes;
+      indexes.clear();
       for(int64_t cx = -SZ; cx <= SZ; cx+= SZ)
       {
 	for(int64_t cy = -SZ; cy <= SZ; cy+= SZ)
 	{
 	  const float ix = x + cx;
 	  const float iy = y + cy;
-	  indexes.emplace_back(index(ix, iy, mInvCellSize));
+	  indexes.emplace(index(ix, iy, mInvCellSize));
 	}
       }
 
       std::vector<T*> res;
       for(auto& idx : indexes)
       {
+	if(mHashMap.find(idx) != mHashMap.end())
+	{
+	  res.insert(res.end(), mHashMap[idx].begin(), mHashMap[idx].end());
+	}
+      }
+      return res;
+    }
+
+    std::vector<T*> get(const float x, const float y, const float w, const float h)
+    {
+      indexes.clear();
+      indexes.emplace(index(x, y, mInvCellSize));
+      indexes.emplace(index(x + w, y, mInvCellSize));
+      indexes.emplace(index(x + w, y + h, mInvCellSize));
+      indexes.emplace(index(x, y + h, mInvCellSize));
+      std::vector<T*> res;
+      for(auto& idx: indexes) {
 	if(mHashMap.find(idx) != mHashMap.end())
 	{
 	  res.insert(res.end(), mHashMap[idx].begin(), mHashMap[idx].end());
@@ -73,6 +104,7 @@ template <typename T> class HashGrid
 
     typedef robin_hood::unordered_map<int64_t, std::vector<T*>> HashMap;
     HashMap mHashMap;
+    std::unordered_set<int64_t> indexes;
 
     static constexpr int64_t index(const float x, const float y, const float invCellSize)
     {

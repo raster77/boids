@@ -10,7 +10,10 @@ Use the following keys
 * **G** : toggle grid ON/OFF
 * **I** : toggle info panel ON/OFF
 * **P** : toggle pause ON/OFF
+* **T** : toggle trails ON/OFF
 
 ## Screenshot
 
 ![Alt text](screenshot/boids.png)
+
+![Alt text](screenshot/boids-trail.png)

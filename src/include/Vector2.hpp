@@ -129,8 +129,8 @@ template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::v
 
     T distanceSquared(const Vector2<T>& v) const
     {
-      T dx = x - v.x;
-      T dy = y - v.y;
+      const T dx = x - v.x;
+      const T dy = y - v.y;
       return dx * dx + dy * dy;
     }
 

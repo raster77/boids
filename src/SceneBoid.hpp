@@ -10,6 +10,7 @@
 #include "boids/behaviors/FlockBehavior.hpp"
 #include "hashgrid/HashGrid.hpp"
 #include "InfoPanel.hpp"
+#include "BoidSprite.hpp"
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/View.hpp>
@@ -90,11 +91,14 @@ class SceneBoid final : public Scene
     BoundaryBehavior boundaryBehavior;
     FlockBehavior flockBehavior;
     std::vector<Boid> boids;
+    std::vector<BoidSprite> sprites;
     std::vector<sf::Vertex> vertices;
     std::vector<sf::Vertex> gridVertices;
+    std::vector<sf::Vertex> trailVertices;
     HashGrid<Boid> grid;
     bool showGrid;
     bool showInfo;
+    bool showTrail;
     std::vector<TimeMeasure> times;
     InfoPanel infoPanel;
     sf::Clock clock;
