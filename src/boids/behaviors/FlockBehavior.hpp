@@ -2,7 +2,7 @@
 #define BOIDS_BEHAVIORS_FLOCKBEHAVIOR_HPP_
 
 #include "MoveBehavior.hpp"
-#include "SeekBehavior.hpp"
+#include "ArriveBehavior.hpp"
 
 class FlockBehavior : public MoveBehavior
 {
@@ -74,8 +74,8 @@ class FlockBehavior : public MoveBehavior
 	separation /= total;
 
 	cohesion /= total;
-	seekBehavior.setTarget(cohesion);
-	cohesion = seekBehavior.compute(b);
+	arriveBehavior.setTarget(cohesion);
+	cohesion = arriveBehavior.compute(b);
       }
 
       if(separation.length() > 0.f)
@@ -92,13 +92,13 @@ class FlockBehavior : public MoveBehavior
   protected:
     void update()
     {
-      seekBehavior.setDistance(mDistance);
+      arriveBehavior.setDistance(mDistance);
     }
 
   private:
     float mSeparation;
     float mDistance;
-    SeekBehavior seekBehavior;
+    ArriveBehavior arriveBehavior;
 
 };
 

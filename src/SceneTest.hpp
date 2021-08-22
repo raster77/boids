@@ -4,8 +4,7 @@
 #include "boids/Boid.hpp"
 #include "boids/behaviors/SeekBehavior.hpp"
 #include "boids/behaviors/WanderBehavior.hpp"
-#include "boids/behaviors/BoundaryBehavior.hpp"
-#include "boids/behaviors/ArriveBehavior.hpp"
+#include "boids/behaviors/ObstacleAvoidanceBehavior.hpp"
 #include "hashgrid/HashGrid.hpp"
 #include "InfoPanel.hpp"
 #include "BoidSprite.hpp"
@@ -29,9 +28,10 @@ class SceneTest final : public Scene
     BoidSprite boidSprite;
     SeekBehavior seekBehavior;
     WanderBehavior wanderBehavior;
-    ArriveBehavior arriveBehavior;
-    BoundaryBehavior boundaryBehavior;
+    ObstacleAvoidanceBehavior obstacleAvoidanceBehavior;
     sf::CircleShape target;
+    std::vector<Obstacle> obstacles;
+    std::vector<sf::CircleShape> obstacleShapes;
 
     void checkBounds(Boid& b);
 };

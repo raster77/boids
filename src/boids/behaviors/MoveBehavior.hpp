@@ -10,6 +10,7 @@ class MoveBehavior
   public:
 
     MoveBehavior()
+      : mEnabled(true)
     {
     }
 
@@ -17,9 +18,26 @@ class MoveBehavior
     {
     }
 
+    void enable()
+    {
+      mEnabled = true;
+    }
+
+    void disable()
+    {
+      mEnabled = false;
+    }
+
+    const bool isEnable() const
+    {
+      return mEnabled;
+    }
+
     virtual Vector2f compute(const Boid& b) = 0;
 
   protected:
+
+    bool mEnabled;
 
     virtual void update()
     {

@@ -117,6 +117,11 @@ template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::v
       return x != v.x || y != v.y;
     }
 
+    bool operator<(const Vector2<T>& v) const
+    {
+      return x < v.x && y < v.y;
+    }
+
     T lengthSquared()
     {
       return x * x + y * y;
@@ -125,6 +130,11 @@ template<typename T, typename = typename std::enable_if<std::is_arithmetic<T>::v
     T length()
     {
       return std::sqrt(lengthSquared());
+    }
+
+    void setLength(const T v)
+    {
+      *this = normalize() * v;
     }
 
     T distanceSquared(const Vector2<T>& v) const

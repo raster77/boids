@@ -55,6 +55,8 @@ class Application
 	    init(videoMode, title, style, ctx);
 	    setup();
 
+	    bool render = false;
+
 	    while(mWindowPtr.get()->isOpen()) {
 		sf::Event event;
 
@@ -89,14 +91,19 @@ class Application
 		    }
 
 		    currentScene->update(FPS_LIMIT);
+		    render = true;
 		}
 
 		mLastUpdateTime = now;
 
-		mWindowPtr.get()->clear();
-		currentScene->draw();
+		if(render)
+		{
+		  render = false;
+		  mWindowPtr.get()->clear();
+		  currentScene->draw();
 
-		mWindowPtr.get()->display();
+		  mWindowPtr.get()->display();
+		}
 	    }
 	    mWindowPtr.get()->close();
 	}
@@ -124,6 +131,8 @@ class Application
 	    sf::ContextSettings ctx;
 	    if(ctxPtr != nullptr) {
 		ctx = *ctxPtr;
+	    } else {
+	      ctx.antialiasingLevel = 0;
 	    }
 
 	    window()->create(videoMode, title, style, ctx);

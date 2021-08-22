@@ -34,13 +34,14 @@ void SceneFlock::load()
   flockBehavior.setDistance(50.f);
 
   rnd::Random* rnd = rnd::Random::getInstance();
-  const std::size_t N = 500;
+  const std::size_t N = 100;
   sprites.reserve(N);
   boids.reserve(N);
 
   for(std::size_t i = 0; i < N; ++i)
   {
     Boid b;
+    b.setRadius(5.f);
     b.setPosition(rnd->getUniformFloat(100.f, 1500.f), rnd->getUniformFloat(100.f, 800.f));
     b.setMaxForce(10.f);
     b.setMaxSpeed(200.f);

@@ -25,8 +25,20 @@ void SceneTest::load()
   rnd::Random* rnd = rnd::Random::getInstance();
   seekBehavior.setTarget(Vector2f(rnd->getInstance()->getUniformFloat(100.f, 1400.f), rnd->getInstance()->getUniformFloat(100.f, 800.f)));
 
-  arriveBehavior.setDistance(200.f);
-  arriveBehavior.setTarget(seekBehavior.getTarget());
+  for(std::size_t i = 0; i < 50; ++i)
+  {
+    Vector2f p(rnd->getInstance()->getUniformFloat(100.f, 1400.f), rnd->getInstance()->getUniformFloat(100.f, 800.f));
+    float r = rnd->getInstance()->getUniformFloat(5.f, 10.f);
+    obstacles.emplace_back(p, r);
+    sf::CircleShape c;
+    c.setRadius(r);
+    c.setOrigin(r, r);
+    c.setPosition(p.x, p.y);
+    c.setFillColor(sf::Color::Red);
+    obstacleShapes.emplace_back(c);
+  }
+
+  obstacleAvoidanceBehavior.setDistance(50.f);
 
   target.setPosition(seekBehavior.getTarget().x, seekBehavior.getTarget().y);
 
@@ -34,23 +46,31 @@ void SceneTest::load()
   wanderBehavior.setRadius(50.f);
   wanderBehavior.setRandomRange(150.f);
 
-  boundaryBehavior.setMin(Vector2f(0.f, 0.f));
-  boundaryBehavior.setMax(Vector2f(1600.f, 900.f));
-
   boid.setPosition(rnd->getUniformFloat(100.f, 1500.f), rnd->getUniformFloat(100.f, 800.f));
+  boid.setRadius(6.f);
+  boid.setMass(5.f);
   boid.setMaxForce(10.f);
-  boid.setMaxSpeed(100.f);
+  boid.setMaxSpeed(250.f);
   boid.addBehavior(&wanderBehavior);
   //boid.addBehavior(&seekBehavior);
-  //boid.addBehavior(&arriveBehavior);
+  boid.addBehavior(&obstacleAvoidanceBehavior);
 
   boidSprite.setBoid(&boid);
-  boidSprite.setSize(6.f);
   boidSprite.setColor(sf::Color(255, 0, 120));
 }
 
 void SceneTest::update(const float dt)
 {
+  std::vector<Obstacle*> obstaclesPtr;
+  const float maxDist = obstacleAvoidanceBehavior.getDistance() + 10.f;
+  for(auto& o : obstacles)
+  {
+    if(boid.getPosition().distance(o.getPosition()) < maxDist)
+    {
+      obstaclesPtr.emplace_back(&o);
+    }
+  }
+  obstacleAvoidanceBehavior.setObstacles(obstaclesPtr);
   boid.update(dt);
   boidSprite.update();
   checkBounds(boid);
@@ -58,6 +78,8 @@ void SceneTest::update(const float dt)
 
 void SceneTest::draw()
 {
+  for(auto& c : obstacleShapes)
+    window->draw(c);
   window->draw(target);
   boidSprite.render(window);
 }
@@ -78,7 +100,6 @@ void SceneTest::handleEvent(sf::Event& event)
     if(event.mouseButton.button == sf::Mouse::Button::Left)
     {
       seekBehavior.setTarget(Vector2f(getMousePosition().x, getMousePosition().y));
-      arriveBehavior.setTarget(Vector2f(getMousePosition().x, getMousePosition().y));
       target.setPosition(seekBehavior.getTarget().x, seekBehavior.getTarget().y);
     }
   }

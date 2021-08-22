@@ -9,14 +9,12 @@ class SeekBehavior : public MoveBehavior
     SeekBehavior()
       : MoveBehavior()
       , mTarget(0.f)
-      , mDistance(50.f)
     {
     }
 
     SeekBehavior(const float distance)
       : MoveBehavior()
       , mTarget(0.f)
-      , mDistance(distance)
     {
     }
 
@@ -34,37 +32,17 @@ class SeekBehavior : public MoveBehavior
       mTarget = target;
     }
 
-    const float getDistance()
-    {
-      return mDistance;
-    }
-
-    void setDistance(const float distance)
-    {
-      mDistance = distance;
-    }
-
     Vector2f compute(const Boid& b)
     {
       Vector2f force = (mTarget - b.getPosition());
-      float d = force.length();
-      force = d < mDistance ?
-	      force.normalize() * map(d, 0.f, mDistance, 0.f, b.getMaxSpeed()) :
-	      force.normalize() * b.getMaxSpeed();
-      Vector2f steer = force - b.getVelocity();
-      limit(steer, b.getMaxForce());
-      return steer;
+      force.setLength(b.getMaxSpeed());
+      force -= b.getVelocity();
+      limit(force, b.getMaxForce());
+      return force;
     }
 
   private:
     Vector2f mTarget;
-    float mDistance;
-
-    float map(const float value, const float istart, const float istop,
-	      float const ostart, float const ostop)
-    {
-      return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
-    }
 };
 
 #endif // SEEKBEHAVIOR_HPP

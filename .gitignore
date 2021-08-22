@@ -34,3 +34,6 @@ Release/
 *.exe
 *.out
 *.app
+
+# Others
+*.out

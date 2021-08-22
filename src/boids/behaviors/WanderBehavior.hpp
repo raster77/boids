@@ -74,7 +74,6 @@ class WanderBehavior : public MoveBehavior
 
     void update()
     {
-      seekBehavior.setDistance(mDistance);
     }
 
   private:
