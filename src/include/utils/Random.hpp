@@ -3,50 +3,41 @@
 
 #include <random>
 
-namespace rnd
-{
+namespace rnd {
 
-  class Random
-  {
+  class Random {
     public:
-      static Random* getInstance()
-      {
-	static rnd::Random instance;
-	return &instance;
+      static Random* getInstance() {
+        static rnd::Random instance;
+        return &instance;
       }
 
-      float getUniformFloat()
-      {
-	return realDist(gen);
+      float getUniformFloat() {
+        return realDist(gen);
       }
 
-      float getUniformFloat(const float min, const float max)
-      {
-	setFloatRange(min, max);
-	return realDist(gen);
+      float getUniformFloat(const float min, const float max) {
+        setFloatRange(min, max);
+        return realDist(gen);
       }
 
-      void setFloatRange(const float min, const float max)
-      {
-	std::uniform_real_distribution<float>::param_type p(min, max);
-	realDist.param(p);
+      void setFloatRange(const float min, const float max) {
+        std::uniform_real_distribution<float>::param_type p(min, max);
+        realDist.param(p);
       }
 
-      int getUniformInt()
-      {
-	return intDist(gen);
+      int getUniformInt() {
+        return intDist(gen);
       }
 
-      int getUniformInt(const int min, const int max)
-      {
-	setIntRange(min, max);
-	return intDist(gen);
+      int getUniformInt(const int min, const int max) {
+        setIntRange(min, max);
+        return intDist(gen);
       }
 
-      void setIntRange(const int min, const int max)
-      {
-	std::uniform_int_distribution<int>::param_type p(min, max);
-	intDist.param(p);
+      void setIntRange(const int min, const int max) {
+        std::uniform_int_distribution<int>::param_type p(min, max);
+        intDist.param(p);
       }
 
     private:
@@ -56,13 +47,10 @@ namespace rnd
       std::uniform_int_distribution<int> intDist;
 
       Random()
-	: rd()
-	, gen(rd())
-      {
+          : rd(), gen(rd()) {
       }
 
-      ~Random()
-      {
+      ~Random() {
       }
 
       Random(const Random&) = delete;

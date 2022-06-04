@@ -7,22 +7,25 @@
 #include <SFML/Graphics/Vertex.hpp>
 #include <array>
 
-class BoidSprite final
-{
+class BoidSprite final {
   public:
     BoidSprite();
     BoidSprite(Boid* b);
     ~BoidSprite();
 
     const std::array<sf::Vertex, 3>& getVertices() const;
-    const std::array<sf::Vertex, 200>& getTrailVertices() const;
+    const std::array<sf::Vertex, 300>& getTrailVertices() const;
     const sf::FloatRect& getBoundingBox() const;
     void update();
     void setColor(const sf::Color& c);
     void showTrail(const bool v);
-    const bool isShowTrail() { return mShowTrail; }
+    const bool isShowTrail() {
+      return mShowTrail;
+    }
     void setBoid(Boid* b);
-    const float getSize() const { return mSize; }
+    const float getSize() const {
+      return mSize;
+    }
     void render(sf::RenderWindow* window);
 
   private:
@@ -30,10 +33,10 @@ class BoidSprite final
     sf::Vector2f lastPosition;
     sf::FloatRect mBoundingBox;
     float mSize;
-    Boid* mBoidPtr;
+    Boid *mBoidPtr;
     static constexpr float RAD = (180.f / 3.141592653f);
     std::array<sf::Vertex, 3> mVertices;
-    std::array<sf::Vertex, 200> mTrailVertices;
+    std::array<sf::Vertex, 300> mTrailVertices;
     std::array<sf::Vertex, 2> mLineVertices;
     bool mShowTrail;
 

@@ -4,85 +4,71 @@
 #include "MoveBehavior.hpp"
 #include "ArriveBehavior.hpp"
 
-class FlockBehavior : public MoveBehavior
-{
+class FlockBehavior : public MoveBehavior {
   public:
     FlockBehavior()
       : mSeparation(0.f)
-      , mDistance(0.f)
-    {
+      , mDistance(0.f) {
     }
 
-    ~FlockBehavior()
-    {
+    ~FlockBehavior() {
     }
 
-    const float getSeparation() const
-    {
+    const float getSeparation() const {
       return mSeparation;
     }
 
-    void setSeparation(const float separation)
-    {
+    void setSeparation(const float separation) {
       mSeparation = separation;
     }
 
-    const float getDistance() const
-    {
+    const float getDistance() const {
       return mDistance;
     }
 
-    void setDistance(const float distance)
-    {
+    void setDistance(const float distance) {
       mDistance = distance;
       update();
     }
 
-    Vector2f compute(const Boid& b)
-    {
+    Vector2f compute(const Boid& b) {
       Vector2f align;
       Vector2f separation;
       Vector2f cohesion;
       const float total = static_cast<float>(b.getNeighbours().size());
-      for(Boid* bPtr : b.getNeighbours())
-      {
-	const float dist = b.getPosition().distance(bPtr->getPosition());
-	if(dist > 0)
-	{
-	  if(dist < mDistance)
-	  {
-	    align += bPtr->getVelocity();
-	    cohesion += bPtr->getPosition();
-	  }
+      for (Boid *bPtr : b.getNeighbours()) {
+        const float dist = b.getPosition().distance(bPtr->getPosition());
+        if (dist > 0) {
+          if (dist < mDistance) {
+            align += bPtr->getVelocity();
+            cohesion += bPtr->getPosition();
+          }
 
-	  if(dist < mSeparation)
-	  {
-	    Vector2f diff = b.getPosition() - bPtr->getPosition();
-	    diff = diff.normalize() / dist;
-	    separation += diff;
-	  }
-	}
+          if (dist < mSeparation) {
+            Vector2f diff = b.getPosition() - bPtr->getPosition();
+            diff = diff.normalize() / dist;
+            separation += diff;
+          }
+        }
       }
 
-      if(total > 0.f)
-      {
-	align /= total;
-	align = align.normalize() * b.getMaxSpeed();
-	align -= b.getVelocity();
-	limit(align, b.getMaxForce());
+      if (total > 0.f) {
+        align /= total;
+        align = align.normalize() * b.getMaxSpeed();
+        align -= b.getVelocity();
+        limit(align, b.getMaxForce());
 
-	separation /= total;
+        separation /= total;
 
-	cohesion /= total;
-	arriveBehavior.setTarget(cohesion);
-	cohesion = arriveBehavior.compute(b);
+        cohesion /= total;
+        arriveBehavior.setTarget(cohesion);
+        cohesion = arriveBehavior.compute(b);
       }
 
-      if(separation.length() > 0.f)
-      {
-	separation = separation.normalize() * b.getMaxSpeed();
-	separation -= b.getVelocity();
-	limit(separation, b.getMaxForce());
+      if (separation.length() > 0.f) {
+        separation = separation.normalize() * b.getMaxSpeed();
+        separation -= b.getVelocity();
+        limit(separation, b.getMaxForce());
       }
 
       return separation + cohesion + align;
@@ -90,8 +76,7 @@ class FlockBehavior : public MoveBehavior
     }
 
   protected:
-    void update()
-    {
+    void update() {
       arriveBehavior.setDistance(mDistance);
     }
 

@@ -7,56 +7,47 @@
 #include "Vector2.hpp"
 #include <cmath>
 
-class WanderBehavior : public MoveBehavior
-{
+class WanderBehavior : public MoveBehavior {
 
   public:
+
     WanderBehavior()
       : MoveBehavior()
       , mRadius(0.f)
       , mDistance(0.f)
       , wandertheta(0.f)
-      , mRandomRange(0.f)
-    {
+      , mRandomRange(0.f) {
     }
 
-    ~WanderBehavior()
-    {
+    ~WanderBehavior() {
     }
 
-    const float getDistance()
-    {
+    const float getDistance() {
       return mDistance;
     }
 
-    void setDistance(const float distance)
-    {
+    void setDistance(const float distance) {
       mDistance = distance;
       update();
     }
 
-    const float getRadius()
-    {
+    const float getRadius() {
       return mRadius;
     }
 
-    void setRadius(const float radius)
-    {
+    void setRadius(const float radius) {
       mRadius = radius;
     }
 
-    const float getRandomRange()
-    {
+    const float getRandomRange() {
       return mRandomRange;
     }
 
-    void setRandomRange(const float range)
-    {
+    void setRandomRange(const float range) {
       mRandomRange = range;
     }
 
-    Vector2f compute(const Boid& b)
-    {
+    Vector2f compute(const Boid& b) {
       rnd::Random::getInstance()->setFloatRange(-mRandomRange, mRandomRange);
       wandertheta += rnd::Random::getInstance()->getUniformFloat();
 
@@ -72,8 +63,7 @@ class WanderBehavior : public MoveBehavior
 
   protected:
 
-    void update()
-    {
+    void update() {
     }
 
   private:
@@ -84,8 +74,7 @@ class WanderBehavior : public MoveBehavior
     float mRandomRange;
     SeekBehavior seekBehavior;
 
-    float heading(const Vector2f& v)
-    {
+    float heading(const Vector2f& v) {
       return std::atan2(v.y, v.x);
     }
 };

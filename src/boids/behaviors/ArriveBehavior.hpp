@@ -3,56 +3,47 @@
 
 #include "MoveBehavior.hpp" // Base class: MoveBehavior
 
-class ArriveBehavior : public MoveBehavior
-{
+class ArriveBehavior : public MoveBehavior {
   public:
     ArriveBehavior()
       : MoveBehavior()
       , mTarget(0.f)
-      , mDistance(50.f)
-    {
+      , mDistance(50.f) {
     }
 
     ArriveBehavior(const float distance)
       : MoveBehavior()
       , mTarget(0.f)
-      , mDistance(distance)
-    {
+      , mDistance(distance) {
     }
 
-    ~ArriveBehavior()
-    {
+    ~ArriveBehavior() {
     }
 
-    const Vector2f& getTarget()
-    {
+    const Vector2f& getTarget() {
       return mTarget;
     }
 
-    void setTarget(const Vector2f& target)
-    {
+    void setTarget(const Vector2f& target) {
       mTarget = target;
     }
 
-    const float getDistance()
-    {
+    const float getDistance() {
       return mDistance;
     }
 
-    void setDistance(const float distance)
-    {
+    void setDistance(const float distance) {
       mDistance = distance;
     }
 
-    Vector2f compute(const Boid& b)
-    {
+    Vector2f compute(const Boid& b) {
       Vector2f force = (mTarget - b.getPosition());
       float d = force.length();
-      if(d < mDistance)
-      {
-	force = force.normalize() * map(d, 0.f, mDistance, 0.f, b.getMaxSpeed());
-      } else {
-	force = force.normalize() * b.getMaxSpeed();
+      if (d < mDistance) {
+        force = force.normalize() * map(d, 0.f, mDistance, 0.f, b.getMaxSpeed());
+      }
+      else {
+        force = force.normalize() * b.getMaxSpeed();
       }
       force -= b.getVelocity();
       limit(force, b.getMaxForce());
@@ -63,9 +54,7 @@ class ArriveBehavior : public MoveBehavior
     Vector2f mTarget;
     float mDistance;
 
-    float map(const float value, const float istart, const float istop,
-	      float const ostart, float const ostop)
-    {
+    float map(const float value, const float istart, const float istop, float const ostart, float const ostop) {
       return ostart + (ostop - ostart) * ((value - istart) / (istop - istart));
     }
 };

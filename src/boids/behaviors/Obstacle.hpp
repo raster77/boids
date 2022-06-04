@@ -1,49 +1,37 @@
-/*
- * Obstacle.hpp
- *
- *  Created on: 3 juil. 2021
- *      Author: thierry
- */
-
 #ifndef BOIDS_BEHAVIORS_OBSTACLE_HPP_
 #define BOIDS_BEHAVIORS_OBSTACLE_HPP_
 
 #include "Vector2.hpp"
 
-class Obstacle
-{
+class Obstacle {
   public:
 
     Obstacle()
       : mPosition(0.f)
-      , mRadius(0.f)
-    {}
+      , mRadius(0.f) {
+    }
 
     Obstacle(const Vector2f& position, const float radius)
       : mPosition(position)
-      , mRadius(radius)
-    {}
+      , mRadius(radius) {
+    }
 
-    ~Obstacle()
-    {}
+    ~Obstacle() {
+    }
 
-    const Vector2f& getPosition() const
-    {
+    const Vector2f& getPosition() const {
       return mPosition;
     }
 
-    void setPosition(const Vector2f& position)
-    {
+    void setPosition(const Vector2f& position) {
       mPosition = position;
     }
 
-    const float getRadius() const
-    {
+    const float getRadius() const {
       return mRadius;
     }
 
-    void setRadius(float radius)
-    {
+    void setRadius(float radius) {
       mRadius = radius;
     }
 
@@ -51,7 +39,5 @@ class Obstacle
     Vector2f mPosition;
     float mRadius;
 };
-
-
 
 #endif /* BOIDS_BEHAVIORS_OBSTACLE_HPP_ */

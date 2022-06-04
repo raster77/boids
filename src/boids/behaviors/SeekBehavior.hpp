@@ -3,37 +3,31 @@
 
 #include "MoveBehavior.hpp" // Base class: MoveBehavior
 
-class SeekBehavior : public MoveBehavior
-{
+class SeekBehavior : public MoveBehavior {
   public:
+
     SeekBehavior()
       : MoveBehavior()
-      , mTarget(0.f)
-    {
+      , mTarget(0.f) {
     }
 
     SeekBehavior(const float distance)
       : MoveBehavior()
-      , mTarget(0.f)
-    {
+      , mTarget(0.f) {
     }
 
-    ~SeekBehavior()
-    {
+    ~SeekBehavior() {
     }
 
-    const Vector2f& getTarget()
-    {
+    const Vector2f& getTarget() {
       return mTarget;
     }
 
-    void setTarget(const Vector2f& target)
-    {
+    void setTarget(const Vector2f& target) {
       mTarget = target;
     }
 
-    Vector2f compute(const Boid& b)
-    {
+    Vector2f compute(const Boid& b) {
       Vector2f force = (mTarget - b.getPosition());
       force.setLength(b.getMaxSpeed());
       force -= b.getVelocity();

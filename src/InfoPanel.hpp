@@ -7,8 +7,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <filesystem>
 
-class InfoPanel final
-{
+class InfoPanel final {
   public:
     InfoPanel();
     ~InfoPanel();
@@ -16,43 +15,35 @@ class InfoPanel final
     void loadFont(const std::filesystem::path& p);
     void setText(const std::string& str);
 
-    const sf::Vector2f& getSize() const
-    {
+    const sf::Vector2f& getSize() const {
       return panel.getSize();
     }
 
-    void setSize(const float x, const float y)
-    {
+    void setSize(const float x, const float y) {
       panel.setSize(sf::Vector2f(x, y));
     }
 
-    const sf::Vector2f& getPosition() const
-    {
+    const sf::Vector2f& getPosition() const {
       return panel.getPosition();
     }
 
-    void setPosition(const float x, const float y)
-    {
+    void setPosition(const float x, const float y) {
       panel.setPosition(sf::Vector2f(x, y));
     }
 
-    const sf::Color& getTextColor() const
-    {
+    const sf::Color& getTextColor() const {
       return txtInfo.getFillColor();
     }
 
-    void setTextColor(const sf::Color& c)
-    {
+    void setTextColor(const sf::Color& c) {
       txtInfo.setFillColor(c);
     }
 
-    const int getTextSize() const
-    {
+    const int getTextSize() const {
       return txtInfo.getCharacterSize();
     }
 
-    void setTextSize(const int size)
-    {
+    void setTextSize(const int size) {
       txtInfo.setCharacterSize(size);
     }
 

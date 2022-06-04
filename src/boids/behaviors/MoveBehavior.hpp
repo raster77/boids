@@ -5,31 +5,25 @@
 
 class Boid;
 
-class MoveBehavior
-{
+class MoveBehavior {
   public:
 
     MoveBehavior()
-      : mEnabled(true)
-    {
+      : mEnabled(true) {
     }
 
-    virtual ~MoveBehavior()
-    {
+    virtual ~MoveBehavior() {
     }
 
-    void enable()
-    {
+    void enable() {
       mEnabled = true;
     }
 
-    void disable()
-    {
+    void disable() {
       mEnabled = false;
     }
 
-    const bool isEnable() const
-    {
+    const bool isEnable() const {
       return mEnabled;
     }
 
@@ -39,16 +33,14 @@ class MoveBehavior
 
     bool mEnabled;
 
-    virtual void update()
-    {
+    virtual void update() {
     }
 
-    void limit(Vector2f& v, const float f)
-    {
+    void limit(Vector2f& v, const float f) {
       float l = v.lengthSquared();
       if (l > f * f) {
-	v /= std::sqrt(l);
-	v *= f;
+        v /= std::sqrt(l);
+        v *= f;
       }
     }
 };

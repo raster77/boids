@@ -11,8 +11,7 @@
 #include <scene/Scene.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 
-class SceneTest final : public Scene
-{
+class SceneTest final : public Scene {
   public:
     SceneTest();
     SceneTest(sf::RenderWindow* window);

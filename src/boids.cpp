@@ -2,20 +2,16 @@
 #include "app/Application.hpp"
 #include "SceneTest.hpp"
 
-class MyApp : public Application
-{
+class MyApp : public Application {
   public:
     MyApp()
-	: Application()
-    {
+      : Application() {
     }
 
-    ~MyApp()
-    {
+    ~MyApp() {
     }
 
-    void setup()
-    {
+    void setup() {
       scene.setWindow(window());
       scene.load();
       currentScene = &scene;
@@ -25,9 +21,8 @@ class MyApp : public Application
     SceneFlock scene;
 };
 
-int main()
-{
+int main() {
   MyApp app;
-  app.run(sf::VideoMode(1920, 1080), "Boids");
+  app.run(sf::VideoMode(sf::Vector2u(1920, 1080)), "Boids");
   return 0;
 }
